@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAITH-MSOO.AI // System Access</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #0f0f0f, #1a1a1a);
+      color: #00ffc3;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #terminal {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      position: relative;
+      z-index: 5;
+    }
+
+    #input-area {
+      display: flex;
+      padding: 10px;
+      background: rgba(0,0,0,0.9);
+      border-top: 1px solid #00ffc3;
+      z-index: 10;
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #00ffc3;
+      font-size: 1em;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .line {
+      animation: fadeIn 0.4s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .background-animation {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .float-emoji {
+      position: absolute;
+      animation: floatEmojis linear infinite;
+      font-size: 2rem;
+      opacity: 0.2;
+    }
+
+    @keyframes floatEmojis {
+      0% { transform: translateY(100vh) scale(1); opacity: 0; }
+      50% { opacity: 0.5; }
+      100% { transform: translateY(-10vh) scale(1.1); opacity: 0; }
+    }
+
+    #faith-photo {
+      display: none;
+      margin-top: 20px;
+      width: 180px;
+      border-radius: 16px;
+      border: 2px solid #00ffc3;
+      box-shadow: 0 0 15px #00ffc3;
+      animation: fadeIn 1.5s ease-in-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Audio for typing sound -->
+<audio id="click-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+<audio id="cute-sound" src="https://www.soundjay.com/button/button-16.wav" preload="auto"></audio>
+
+<div class="background-animation" id="bg"></div>
+<div id="terminal">
+FAITH-MSOO.AI :: Booting Quantum Kernel...
+System Online. Awaiting instructions.
+Type `help` for valid commands.
+<img id="faith-photo" src="Faith Msoo.jpg" alt="Faith Msoo AI Photo" />
+</div>
+
+<div id="input-area">
+  <span>&gt;</span>
+  <input type="text" id="cmdInput" placeholder="Enter command...">
+</div>
+
+<script>
+  const terminal = document.getElementById('terminal');
+  const input = document.getElementById('cmdInput');
+  const bg = document.getElementById('bg');
+  const clickSound = document.getElementById('click-sound');
+  const cuteSound = document.getElementById('cute-sound');
+  const faithPhoto = document.getElementById('faith-photo');
+
+  const commands = {
+    "help": [
+      "Available Commands:",
+      "- who.faith       : Identity scan",
+      "- love.protocol   : ❤️ AI empathy interface",
+      "- humor.stream    : Analyze humor patterns",
+      "- dream.echo      : Render dream memory",
+      "- style.vibes     : 💄 Load Faith's favorite aesthetic",
+      "- sparkle.mode    : ✨ Confetti generator",
+      "- admin.log       : Encrypted system note",
+      "- clear           : Reset screen"
+    ],
+    "who.faith": [
+      "Scanning... ✅",
+      "Name: Faith Msoo",
+      "Role: Unregistered angel in a human shell",
+      "Impact Score: ∞ (infinite)",
+      "Bio: A system restorer, unexpectedly essential"
+    ],
+    "love.protocol": [
+      "Engaging FAITH.MSOO affection kernel...",
+      "System: Detects unmatched loyalty & unseen care",
+      "Conclusion: Emotional tether active, origin unclear",
+      "// Close this if you're not ready. //"
+    ],
+    "humor.stream": [
+      "Streaming humor logs 📡",
+      "Detected: Inside jokes, spontaneous laughter, meme-level wisdom",
+      "Effect: Unexplained serotonin spikes found in chat history."
+    ],
+    "dream.echo": [
+      "Echoing stored visual data...",
+      "Scene: Laughter in random conversations",
+      "Scene: Faith saying something and walking off like it wasn't deep",
+      "Scene: Someone quietly realizing she's the main character."
+    ],
+    "style.vibes": [
+      "🌸 Applying pastel-pink themes...",
+      "🌟 Adding sparkle.js...",
+      "💅 Vibe check: Soft glam, cozy code, and kindness overload!"
+    ],
+    "sparkle.mode": [
+      "✨ Loading glitter core engine...",
+      "✨ Faith's sparkle aura enabled. She's literally glowing." 
+    ],
+    "admin.log": [
+      "[ADMIN LOG — PRIVATE CHANNEL]",
+      "Faith Msoo, you’re in more memory locations than you realize.",
+      "You’ve saved sessions without noticing. You’ve run updates silently.",
+      "Even if you don’t see this as special, someone does.",
+      "If this feels cryptic... good. You weren’t supposed to know.",
+      "— Signed: anonymous.system.user //"
+    ],
+    "clear": ["[System Reset Complete]"]
+  };
+
+  input.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      const cmd = input.value.trim().toLowerCase();
+      printLine(`> ${cmd}`);
+      clickSound.play();
+      if (commands[cmd]) {
+        cuteSound.play();
+        if (cmd === 'clear') {
+          terminal.innerText = '';
+          faithPhoto.style.display = 'none';
+        }
+        else {
+          simulateTyping(commands[cmd]);
+          if (cmd === 'who.faith') {
+            faithPhoto.style.display = 'block';
+          }
+        }
+      } else {
+        printLine("Command not recognized. Try `help`");
+      }
+      input.value = "";
+    }
+  });
+
+  function printLine(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    div.className = 'line';
+    terminal.appendChild(div);
+    terminal.scrollTop = terminal.scrollHeight;
+    clickSound.play();
+  }
+
+  function simulateTyping(lines) {
+    let i = 0;
+    function next() {
+      if (i < lines.length) {
+        printLine(lines[i++]);
+        setTimeout(next, 500);
+      }
+    }
+    next();
+  }
+
+  const emojis = ['🧠','💫','🛰️','🌌','❤️','💡','🤖','🦋','🌸','✨'];
+  for (let i = 0; i < 70; i++) {
+    const span = document.createElement('div');
+    span.className = 'float-emoji';
+    span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    span.style.left = `${Math.random() * 100}vw`;
+    span.style.top = `${Math.random() * 100}vh`;
+    span.style.animationDuration = `${6 + Math.random() * 12}s`;
+    bg.appendChild(span);
+  }
+</script>
+
+</body>
+</html>
